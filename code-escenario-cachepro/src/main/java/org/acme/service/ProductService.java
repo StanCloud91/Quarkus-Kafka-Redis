@@ -9,6 +9,7 @@ import org.acme.entity.Product;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import io.vertx.redis.client.Response;
+import java.time.LocalDate;
 
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class ProductService {
                 
         if (response != null) {
             productJson = redisClient.get(getRedisKey(id)).toString();
+            incrementQueryCount(id);
             return JsonObject.mapFrom(new JsonObject(productJson)).mapTo(Product.class);
         }
 
@@ -65,6 +67,21 @@ public class ProductService {
         // Si no está en Redis, lo buscamos en la base de datos
         Product product = new Product();
         return product;
+    }
+    public void incrementQueryCount(Long id) {
+        String key = getKey(id.toString());
+        redisClient.incrby(key, "1");
+    }
+
+    public Long getQueryCount(Long id ) {
+        String key = getKey(id.toString());
+        Response response = redisClient.get(key);
+        return response != null ? Long.parseLong(response.toString()) : 0L;
+    }
+
+    private String getKey(String productId) {
+        LocalDate today = LocalDate.now();
+        return String.format("product:queries:%s:%s", productId, today);
     }
 
     @Transactional

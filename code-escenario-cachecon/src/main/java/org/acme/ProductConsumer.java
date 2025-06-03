@@ -14,6 +14,9 @@ public class ProductConsumer {
     @Inject
     RedisClient redisClient;
 
+    @Inject
+    ProductQueryCounter queryCounter;
+
     @Incoming("products")
     public void consume(String productJson) {
         JsonObject product = new JsonObject(productJson);
@@ -21,5 +24,8 @@ public class ProductConsumer {
         
         // Almacenar en Redis
         redisClient.set(List.of("product:" + productId, productJson));
+
+        // Incrementar el contador de consultas
+        queryCounter.incrementQueryCount(productId);
     }
 } 

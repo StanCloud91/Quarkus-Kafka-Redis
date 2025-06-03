@@ -34,6 +34,16 @@ public class ProductResource {
     }
 
     @GET
+    @Path("/counter/{id}")
+    public Response getProductCounter(@PathParam("id") Long id) {
+        Long count = productService.getQueryCount(id);
+        if (count != null) {
+            return Response.ok(count).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @GET
     @Path("/redis/{id}")
     public Response getProductRedis(@PathParam("id") Long id) {
         Product product = productService.getProductRedis(id);
