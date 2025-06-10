@@ -1,0 +1,20 @@
+/* Estilos globales */
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: var(--font-family);
+}
+
+.p-menubar {
+    border-radius: 0;
+    margin-bottom: 1rem;
+}
+
+.card {
+    background: var(--surface-card);
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+/* You can add global styles to this file, and also import other style files */
